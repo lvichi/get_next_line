@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lvichi <lvichi@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 15:14:18 by lvichi            #+#    #+#             */
-/*   Updated: 2023/10/22 15:46:59 by lvichi           ###   ########.fr       */
+/*   Updated: 2023/10/22 16:05:41 by lvichi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*fill_buffer(int fd)
 {
@@ -71,24 +71,24 @@ static char	*new_buffer(char *buffer, size_t size)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[MAX_FILES];
 	char		*line;
 	char		*temp_buffer;
 
-	if (!buffer)
+	if (!buffer[fd])
 	{
-		buffer = fill_buffer(fd);
-		if (!buffer)
+		buffer[fd] = fill_buffer(fd);
+		if (!buffer[fd])
 			return (NULL);
 	}
-	while (!ft_strchr(buffer, '\n'))
+	while (!ft_strchr(buffer[fd], '\n'))
 	{
 		temp_buffer = fill_buffer(fd);
 		if (!temp_buffer)
 			break ;
-		buffer = ft_strcat(buffer, temp_buffer);
+		buffer[fd] = ft_strcat(buffer[fd], temp_buffer);
 	}
-	line = fill_line(buffer);
-	buffer = new_buffer(buffer, ft_strlen(line));
+	line = fill_line(buffer[fd]);
+	buffer[fd] = new_buffer(buffer[fd], ft_strlen(line));
 	return (line);
 }
