@@ -6,22 +6,21 @@
 /*   By: lvichi <lvichi@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 15:14:18 by lvichi            #+#    #+#             */
-/*   Updated: 2023/10/22 15:46:59 by lvichi           ###   ########.fr       */
+/*   Updated: 2023/10/22 21:40:37 by lvichi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*fill_buffer(int fd)
+static char	*fill_buffer(int fd, ssize_t *read_return)
 {
 	char	*buffer;
-	ssize_t	read_return;
 
 	buffer = (char *)ft_calloc(sizeof(char), (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	read_return = read(fd, buffer, BUFFER_SIZE);
-	if (read_return <= 0)
+	*read_return = read(fd, buffer, BUFFER_SIZE);
+	if (*read_return <= 0)
 	{
 		free(buffer);
 		return (NULL);
@@ -74,21 +73,28 @@ char	*get_next_line(int fd)
 	static char	*buffer;
 	char		*line;
 	char		*temp_buffer;
+	ssize_t		read_return;
 
+	read_return = 0;
 	if (!buffer)
 	{
-		buffer = fill_buffer(fd);
+		buffer = fill_buffer(fd, &read_return);
 		if (!buffer)
 			return (NULL);
 	}
 	while (!ft_strchr(buffer, '\n'))
 	{
-		temp_buffer = fill_buffer(fd);
+		temp_buffer = fill_buffer(fd, &read_return);
 		if (!temp_buffer)
 			break ;
 		buffer = ft_strcat(buffer, temp_buffer);
 	}
 	line = fill_line(buffer);
 	buffer = new_buffer(buffer, ft_strlen(line));
+	if (read_return == -1)
+	{
+		free (line);
+		return (NULL);
+	}
 	return (line);
 }

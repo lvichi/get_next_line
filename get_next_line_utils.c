@@ -6,7 +6,7 @@
 /*   By: lvichi <lvichi@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 20:18:45 by lvichi            #+#    #+#             */
-/*   Updated: 2023/10/21 21:50:24 by lvichi           ###   ########.fr       */
+/*   Updated: 2023/10/22 21:14:39 by lvichi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ char	*ft_strcat(char *str_first, char *str_second)
 	int		i;
 	int		t;
 
+	if (!str_first)
+		return (NULL);
 	if (!str_second)
 		return (str_first);
 	str = (char *)malloc(ft_strlen(str_first) + ft_strlen(str_second) + 1);
