@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lvichi <lvichi@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 15:14:18 by lvichi            #+#    #+#             */
-/*   Updated: 2023/10/23 17:06:44 by lvichi           ###   ########.fr       */
+/*   Updated: 2023/10/23 17:12:35 by lvichi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*fill_buffer(int fd, ssize_t *read_return)
 {
@@ -84,20 +84,20 @@ char	*check_buffer(int fd, ssize_t *read_return, char	*buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[MAX_FILES];
 	char		*line;
 	ssize_t		read_return;
 
 	read_return = 0;
-	if (!buffer)
+	if (!buffer[fd])
 	{
-		buffer = fill_buffer(fd, &read_return);
-		if (!buffer)
+		buffer[fd] = fill_buffer(fd, &read_return);
+		if (!buffer[fd])
 			return (NULL);
 	}
-	buffer = check_buffer(fd, &read_return, buffer);
-	line = fill_line(buffer);
-	buffer = new_buffer(buffer, ft_strlen(line));
+	buffer[fd] = check_buffer(fd, &read_return, buffer[fd]);
+	line = fill_line(buffer[fd]);
+	buffer[fd] = new_buffer(buffer[fd], ft_strlen(line));
 	if (read_return == -1)
 	{
 		free (line);
